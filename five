@@ -1,0 +1,38 @@
+%%
+clc; %清理命令行
+clear; %清理工作区变量
+close all; %关闭所有图形窗口
+%% 模块功能：
+filename ='circuit';%打开文件circuit
+im = imread([filename,'.jpg']);%读取图片circuit.jpg
+%% 模块功能:
+rotI = imrotate(im,33,'crop');%将图像逆时针旋转33度，并且与原图像保持一致
+BW = edge(rotI,'canny');%提取图像边缘，获得二值图像
+%% 模块功能：
+ [H,T,R] = hough(BW);%计算二值图像BW的标准霍夫变换，H为霍夫变换矩阵，I,R为计算霍夫变换的角度和半径
+ imshow(H,[],'Xdata',T,'Ydata',R,'InitialMagnification','fit');%显示霍夫变换后的图像  
+ xlabel('\theta'),ylabel('\rho');%通过函数 xlabel 和 ylabel 使用 LaTeX 样式的希腊字母来标注坐标轴
+ axis on, axis normal, hold on;
+%% 模块功能：
+ P = houghpeaks(H,5,'threshold',ceil(0.3*max(H(:))));%在Hough矩阵中寻找前5个大于霍夫矩阵中最大值0.3倍的峰值
+ x=T(P(:,2));y=R(P(:,1)); %由行列索引转换成实际坐标
+ plot(x,y,'s','color','white');%在Hough矩阵图像中标出峰值位置
+%% 模块功能：
+ lines =houghlines(BW,T,R,P,'FillGap',5,'MinLength',7);%合并距离小于5的线段，丢弃所有长度小于7的直线段
+ figure, imshow(rotI),hold on %建立图像，显示翻转后的图像，保持图像
+ max_len =0;%赋值
+ for k = 1 :length(lines)%依次画出k条直线
+    xy=[lines(k).point1;lines(k).point2];%定义线段端点
+    plot(xy(:,1),xy(:,2),'LineWidth',2,'Color','green');%绘制第k条直线(绿色）
+    plot(xy(1,1),xy(1,2),'x','LineWidth',2,'Color','yellow');%绘制第k条直线的起点（黄色）
+    plot(xy(2,1),xy(2,2),'x','LineWidth',2,'Color','red');% 绘制第k条直线的终点（红色）
+    
+    len =norm(lines(k).point1 - lines(k).point2);%计算第k条直线的长度，保留最长直线的端点
+    if(len>max_len)%如果获取的线段长度大于最长线段的长度
+      max_len = len;%最长线段的长度就是现在得到的线段长度
+        xy_long =xy;%保留它的端点
+     end
+ end
+
+%% 模块功能：
+ plot(xy_long(:,1),xy_long(:,2),'LineWidth',2,'Color','cyan');%高亮显示最长线段
