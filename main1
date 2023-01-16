@@ -1,0 +1,69 @@
+%% filename可以设置为不同值（'lenna'、'cameraman'），运行main.m，即可得到结果
+%%
+clc; 
+clear;
+close all;
+
+%% 参数设置
+y = 50;
+x = 50;
+ratio_1 = 3; % 缩放因子1
+ratio_2 = 0.5;   % 缩放因子2
+lumi_para = 100; % 亮度变化
+filename = 'lenna'; % 测试图像1
+% filename = 'cameraman'; % 测试图像2
+
+img_p1 = imread(['P1', '.bmp']);% 行人图像1
+img_p2 = imread(['P2', '.bmp']);% 行人图像2
+img_p3 = imread(['P3', '.bmp']);% 行人图像3
+im = imread([filename, '.jpg']);
+%[row, col, channel] = size(im); %得到图像尺寸
+
+%% 将图像进行y和x方向的平移
+im1_trans = myTranslation(im,y,x);
+%% 将图像缩放为原图的ratio倍
+im1_large_scale = myScale(im, ratio_1);
+im1_small_scale = myScale(im, ratio_2);
+%% 将图像进行水平翻转和上下翻转
+im1_flip1 = myFlip(im,1);
+im1_flip2 = myFlip(im,2);
+%% 通过一元加减法改变图像的整体亮度
+[im2_lumi1,im2_lumi2] = myLumi(im,lumi_para);%im2_lumi1为变亮的图像，im2_lumi2为变暗的图像
+%% 图像求反
+im2_comp = myComplement(im);
+%% 以130为阈值实现灰度阈值变换
+im2_thr = myThreshold(im);
+%% 计算两幅图像之间的距离
+dist1 = myEucdist(img_p1,img_p2);
+dist2 = myEucdist(img_p3,img_p2);
+disp(['P1和P2两幅图像的距离为：',num2str(dist1)]);
+disp(['P3和P2两幅图像的距离为：',num2str(dist2)]);
+%% 将结果保存到当前目录下的result文件夹下
+imwrite(im1_trans, sprintf('/result/%s_%d_%d.jpg', filename,y,x));
+imwrite(im1_large_scale, sprintf('/result/%s_%.1f.jpg', filename, ratio_1));
+imwrite(im1_small_scale, sprintf('/result/%s_%.1f.jpg', filename, ratio_2));
+imwrite(im1_flip1, sprintf('/result/%s_flipud.jpg', filename));
+imwrite(im1_flip2, sprintf('/result/%s_fliplr.jpg', filename));
+
+imwrite(im2_lumi1, sprintf('/result/%s_lumi1.jpg', filename));
+imwrite(im2_lumi2, sprintf('/result/%s_lumi2.jpg', filename));
+imwrite(im2_comp, sprintf('/result/%s_comp.jpg', filename));
+imwrite(im2_thr, sprintf('/result/%s_thr.jpg', filename));
+
+%% 显示结果
+figure(1); 
+subplot(231); imshow(im); title('原图'); axis on
+subplot(232); imshow(im1_trans); title('图像平移'); axis on
+subplot(233); imshow(im1_large_scale); title('放大图像'); axis on
+subplot(234); imshow(im1_small_scale); title('缩小图像'); axis on
+subplot(235); imshow(im1_flip1); title('上下翻转图像'); axis on
+subplot(236); imshow(im1_flip2); title('水平翻转图像'); axis on
+
+figure(2);
+subplot(231); imshow(im); title('原图'); axis on
+subplot(232); imshow(im2_lumi1); title('一元加法图像'); axis on
+subplot(233); imshow(im2_lumi2); title('一元减法图像'); axis on
+subplot(234); imshow(im2_comp); title('图像求反'); axis on
+subplot(235); imshow(im2_thr); title('灰度阈值变换'); axis on
+
+
