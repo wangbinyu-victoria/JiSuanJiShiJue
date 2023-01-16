@@ -1,0 +1,10 @@
+function img_2 = myHisteq(img_1, n)
+
+size_1 = size(img_1);
+h = size_1(1);
+w = size_1(2);
+img_2 = zeros(h, w);
+
+img_2 = histeq(img_1,n);
+
+end
