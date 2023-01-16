@@ -1,0 +1,12 @@
+%% 需补全代码
+function [img_2,g] = mySharpen(img_1,w)
+
+img_1 = double(img_1); % 转换为double型，这样可以保存负值，否则uint8型会把负值裁掉
+g=imfilter(img_1,w,'corr','replicate'); % w为滤波/锐化掩模
+g=abs(g);%绝对值
+img_2=img_1-g;
+
+
+end
+
+
