@@ -1,0 +1,23 @@
+%%
+clc;%清理命令行
+clear;%清理工作区变量的状态数据
+close all;%关闭所有图形窗口
+%% 模块功能
+%filename = 'fingerprint';%注释掉（打开文件fingerprint）
+filename = 'wood_dowels';%打开文件wood_dowels
+im = imread([filename,'.tif']);%读取图片wood_dowels.tif
+%% 模块功能
+thres =0.5*(double(min(im(:)))+double(max(im(:))));%自动分割采用的初始阀值
+done =false;%结束标志
+while~done%done为假继续迭代
+    g=im>= thres;%求读取的图片im中 >= 平均灰度值的逻辑矩阵(thres为自动分割采用的阈值)
+    Tnext=0.5*(mean(im(g))+mean(im(~g)));%将 >= 灰度值平均加上 < 灰度值，乘0.5（再平均） 
+    done =abs(thres -Tnext)<0.5;% 将刚求得的平均值与原平均值相减后取绝对值，<0.5 done为真 
+    thres =Tnext; % 将新平均值赋予原平均值
+end%结束循环
+
+Ibw = im2bw(im,thres/255);%二值化
+%%
+imshow(Ibw)%显示处理之前的图片
+fprintf('The threshold value is %8.5f\n',thres);%显示分割后的二值图像
+
