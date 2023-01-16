@@ -1,0 +1,7 @@
+% 需补全代码
+function [img_2] = myMedian(img_1)
+
+img_2=medfilt2(img_1, [3,3]);
+end
+
+
