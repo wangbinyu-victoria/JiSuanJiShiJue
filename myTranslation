@@ -1,0 +1,7 @@
+function [img_2] = translation(img_1, y, x)
+
+se = translate( strel(1),[y,x]); % strel用来创建形态学结构元素
+                   % translate(SE,[y,x])在原结构元素SE上进行y和x方向的偏移
+
+
+end
