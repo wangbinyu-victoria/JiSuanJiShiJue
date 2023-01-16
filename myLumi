@@ -1,0 +1,5 @@
+function [img_2,img_3] = lumi(img_1,n)
+
+
+
+end
