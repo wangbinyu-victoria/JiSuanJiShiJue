@@ -1,0 +1,5 @@
+function [img_2] = threshold(img_1)
+
+
+
+end
