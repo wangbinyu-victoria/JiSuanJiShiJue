@@ -1,0 +1,5 @@
+function [img_3] = scale(img_1, r)
+
+
+
+end
