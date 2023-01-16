@@ -1,0 +1,52 @@
+%% 请大家完成直方图均衡化函数 mySharpen.m，然后将本主程序中的变量
+%% filename设置‘moon’，运行main_sharpen.m，即可得到图像锐化后的结果
+%% 需补全代码
+%%
+clc; 
+clear;
+close all;
+
+%% 读取图片，需补全代码
+filename = 'moon'; %测试图像1
+im = imread([filename, '.jpg']);
+
+%% 拉普拉斯算子，需补全代码
+ w_1=fspecial('laplacian',0);% 输入拉普拉斯算子w_l
+ [im_1,edge_1]=mySharpen(im,w_1); % 获得拉普拉斯算子处理的锐化图像im_l和边缘图像edge_l
+%% Roberts算子，需补全代码
+w_r1 =[-1 0;0 1];
+[im_r1,edge_r1]=mySharpen(im,w_r1);     % 输入Roberts竖直模板          
+w_r2 =[0 -1;1 0];
+[im_r2,edge_r2]=mySharpen(im,w_r2);     % 输入Roberts水平模板
+edge_r=edge_r1+edge_r2;                 % 计算Roberts梯度
+im_r = im_r1+im_r2;                     % 获得Roberts算子处理的锐化图像im_r
+%% Sobel算子，需补全代码
+ w_s1 =fspecial('sobel');
+ [im_s1,edge_s1]=mySharpen(im,w_s1);    % 得到竖直Sobel模板
+ w_s2 = w_s1';   
+ [im_s2,edge_s2]=mySharpen(im,w_s2);    % 得到水平Sobel模板
+ edge_s=edge_s1+edge_s2;                % 计算Sobel梯度
+ im_s=im_s1+im_s2;                      % 获得Sobel算子处理的锐化图像im_r
+
+%% 将梯度图和锐化图结果保存到当前目录下的result文件夹下
+% 试试如果不用uint8()函数，出来的图像有变化吗？
+ imwrite(uint8(im), sprintf('result/%s_Laplacian.jpg', filename)); 
+ imwrite(uint8(edge_1), sprintf('result/%s_edge_1.jpg', filename));
+imwrite(uint8(im_r), sprintf('result/%s_Roberts.jpg', filename));
+imwrite(uint8(edge_r), sprintf('result/%s_edge_r.jpg', filename));
+ imwrite(uint8(im_s), sprintf('result/%s_Sobel.jpg', filename));
+ imwrite(uint8(edge_s), sprintf('result/%s_edge_s.jpg', filename));
+
+%% 显示结果，需补全代码
+figure(1); 
+subplot(331); imshow(im); title('原图'); axis on
+ subplot(332); imshow(uint8(im_1)); title('拉普拉斯图像锐化'); axis on      % title('拉普拉斯图像锐化'); axis on
+ subplot(333); imshow(uint8(edge_1)); title('拉普拉斯图像边缘'); axis on    % title('拉普拉斯图像边缘'); axis on
+
+subplot(334); imshow(uint8(im_r)); title('Roberts图像锐化'); axis on       % title('Roberts图像锐化'); axis on
+subplot(335); imshow(uint8(edge_r)); title('Roberts图像边缘'); axis on     % title('Roberts图像边缘'); axis on
+
+subplot(336); imshow(uint8(im_r)); title('Sobel图像锐化'); axis on       % title('Sobel图像锐化'); axis on
+subplot(337); imshow(uint8(edge_r));title('Sobel图像边缘'); axis on            % title('Sobel图像边缘'); axis on
+
+
