@@ -1,0 +1,11 @@
+% 需补全代码
+function [img_2] = myAverage(img_1)
+
+h = fspecial('average', 3);
+img2 = imfilter(img1,h,'corr','replicate');
+
+% 获取3*3平均模板
+% 相关滤波，重复填充边界
+
+end
+
