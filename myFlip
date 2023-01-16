@@ -1,0 +1,5 @@
+function [img_2] = flip(img_1,n)
+
+
+
+end
